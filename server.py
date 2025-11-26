@@ -17,14 +17,11 @@ def submit():
         if not data:
             return jsonify({"success": False, "error": "Нет данных"}), 400
 
-        # Получаем корректный IP пользователя
+        # IP лида
         forwarded = request.headers.get("X-Forwarded-For", "")
         ip = forwarded.split(",")[0] if forwarded else request.remote_addr
 
-        # URL CRM
-        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
-
-        # Формируем payload — ТОЛЬКО form-data
+        # CRM принимает только form-data! НЕ JSON
         payload = {
             "name": data.get("name", ""),
             "lastname": data.get("lastname", ""),
@@ -34,11 +31,15 @@ def submit():
             "start_date": data.get("start_date", ""),
             "last_contact": data.get("last_contact", ""),
             "other_lawyers": data.get("other_lawyers", ""),
-            "ip": ip,
-            "funnel": "Oldyurist",
+
+            # обязательные для CRM
             "geo": "RU",
-            "landing": "https://yrkaais.onrender.com"
+            "landing": "https://yrkaais.onrender.com",
+            "ip": ip,
+            "offer": 128   # ← КРИТИЧЕСКИ ВАЖНО: ID оффера вместо funnel
         }
+
+        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
 
         response = requests.post(CRM_URL, data=payload)
 
