@@ -8,40 +8,29 @@ app = Flask(__name__)
 def index():
     return send_from_directory("", "lead_form.html")
 
-
 @app.route("/submit", methods=["POST"])
 def submit():
     try:
         data = request.form.to_dict()
 
-        if not data:
-            return jsonify({"success": False, "error": "Нет данных"}), 400
-
-        # IP лида
         forwarded = request.headers.get("X-Forwarded-For", "")
         ip = forwarded.split(",")[0] if forwarded else request.remote_addr
 
-        # CRM принимает только form-data! НЕ JSON
         payload = {
             "name": data.get("name", ""),
             "lastname": data.get("lastname", ""),
             "phone": data.get("phone", ""),
             "email": data.get("email", ""),
-            "losses": data.get("losses", ""),
-            "start_date": data.get("start_date", ""),
-            "last_contact": data.get("last_contact", ""),
-            "other_lawyers": data.get("other_lawyers", ""),
-
-            # обязательные для CRM
+            "comment": data.get("comment", ""),
             "geo": "RU",
             "landing": "https://yrkaais.onrender.com",
             "ip": ip,
-            "offer": 128   # ← КРИТИЧЕСКИ ВАЖНО: ID оффера вместо funnel
+            "offer_id": 128
         }
 
         CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
 
-        response = requests.post(CRM_URL, data=payload)
+        response = requests.post(CRM_URL, data=payload, timeout=20)
 
         return jsonify({
             "success": True,
