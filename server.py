@@ -32,7 +32,7 @@ def submit():
             "phone": data.get("phone"),
             "email": data.get("email"),
             "comment": comment,
-            "offer_id": 128,
+            "offer": 128,
             "geo": "RU",
             "ip": ip
         }
