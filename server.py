@@ -13,24 +13,35 @@ def submit():
     try:
         data = request.form.to_dict()
 
+        if not data:
+            return jsonify({"success": False, "error": "Нет данных"}), 400
+
+        # IP лида
         forwarded = request.headers.get("X-Forwarded-For", "")
-        ip = forwarded.split(",")[0] if forwarded else request.remote_addr
+        if forwarded:
+            ip = forwarded.split(",")[0]
+        else:
+            ip = request.remote_addr
+
+        # Формируем комментарий так, как CRM хочет
+        comment = data.get("comment", "").strip()
 
         payload = {
-            "name": data.get("name", ""),
-            "lastname": data.get("lastname", ""),
-            "phone": data.get("phone", ""),
-            "email": data.get("email", ""),
-            "comment": data.get("comment", ""),
+            "name": data.get("name"),
+            "lastname": data.get("lastname"),
+            "phone": data.get("phone"),
+            "email": data.get("email"),
+            "comment": comment,
+            "offer_id": 128,
             "geo": "RU",
-            "landing": "https://yrkaais.onrender.com",
-            "ip": ip,
-            "offer_id": 128
+            "ip": ip
         }
 
-        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
+        CRM_URL = "https://dmtraff.com/api/ext/add.json"
 
-        response = requests.post(CRM_URL, data=payload, timeout=20)
+        params = {"id": "119-88190c469be217ca48cb158d411b262d"}
+
+        response = requests.post(CRM_URL, params=params, json=payload)
 
         return jsonify({
             "success": True,
