@@ -8,49 +8,41 @@ app = Flask(__name__)
 def index():
     return send_from_directory("", "lead_form.html")
 
+
 @app.route("/submit", methods=["POST"])
 def submit():
     try:
-        data = request.get_json()
+        data = request.form.to_dict()
 
         if not data:
             return jsonify({"success": False, "error": "Нет данных"}), 400
 
-        # Корректный IP
+        # Берём корректный IP клиента
         forwarded = request.headers.get("X-Forwarded-For", "")
-        ip = forwarded.split(",")[0] if forwarded else request.remote_addr
+        if forwarded:
+            ip = forwarded.split(",")[0]
+        else:
+            ip = request.remote_addr
 
         payload = {
-            "affc": "AFF-O20FT4UUAO",
-            "bxc": "BX-CL0XOBD3BRQ48",
-            "vtc": "VT-HP8XSRMKVS6E7",
-
-            "profile": {
-                "firstName": data.get("firstName", ""),
-                "lastName": data.get("lastName", ""),
-                "email": data.get("email", ""),
-                "password": "Temp12345!",
-                "phone": data.get("phone", "").replace("+", "")
-            },
-
+            "name": data.get("name", ""),
+            "lastname": data.get("lastname", ""),
+            "phone": data.get("phone", ""),
+            "email": data.get("email", ""),
             "ip": ip,
-            "funnel": "AtomKz",
-            "landingURL": "https://mercedes-4371.onrender.com",
-            "geo": "KZ",
-            "lang": "ru",
-            "landingLang": "ru",
-            "userAgent": request.headers.get("User-Agent"),
-            "comment": None
+            "funnel": "Oldyurist",
+            "geo": "RU",
+            "landing_url": "https://yrkaais.onrender.com",
         }
 
-        CRM_URL = "https://symbios.hn-crm.com/api/external/integration/lead"
+        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
 
-        headers = {
-            "Content-Type": "application/json",
-            "x-api-key": "53486a07-a2fc-4811-9375-a4eb919f0cec"
-        }
-
-        response = requests.post(CRM_URL, json=payload, headers=headers, timeout=20)
+        response = requests.post(
+            CRM_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=20
+        )
 
         return jsonify({
             "success": True,
