@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Форма заявки</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Форма заявки</h2>
+
+<form id="leadForm">
+    Имя:<br>
+    <input type="text" name="firstName" required><br><br>
+
+    Фамилия:<br>
+    <input type="text" name="lastName" required><br><br>
+
+    Почта:<br>
+    <input type="email" name="email" required><br><br>
+
+    Телефон:<br>
+    <input type="text" name="phone" required placeholder="+7700XXXXXXX"><br><br>
+
+    <button type="submit">Отправить</button>
+</form>
+
+<p id="result"></p>
+
+<script>
+document.getElementById("leadForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const data = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        email: form.email.value,
+        phone: form.phone.value
+    };
+
+    const res = await fetch("/submit", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    document.getElementById("result").innerText = "Ответ CRM: " + JSON.stringify(json);
+});
+</script>
+
+</body>
+</html>
