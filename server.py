@@ -17,32 +17,30 @@ def submit():
         if not data:
             return jsonify({"success": False, "error": "Нет данных"}), 400
 
-        # Берём корректный IP клиента
+        # Получаем корректный IP пользователя
         forwarded = request.headers.get("X-Forwarded-For", "")
-        if forwarded:
-            ip = forwarded.split(",")[0]
-        else:
-            ip = request.remote_addr
+        ip = forwarded.split(",")[0] if forwarded else request.remote_addr
 
+        # URL CRM
+        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
+
+        # Формируем payload — ТОЛЬКО form-data
         payload = {
             "name": data.get("name", ""),
             "lastname": data.get("lastname", ""),
             "phone": data.get("phone", ""),
             "email": data.get("email", ""),
+            "losses": data.get("losses", ""),
+            "start_date": data.get("start_date", ""),
+            "last_contact": data.get("last_contact", ""),
+            "other_lawyers": data.get("other_lawyers", ""),
             "ip": ip,
             "funnel": "Oldyurist",
             "geo": "RU",
-            "landing_url": "https://yrkaais.onrender.com",
+            "landing": "https://yrkaais.onrender.com"
         }
 
-        CRM_URL = "https://dmtraff.com/api/ext/add.json?id=119-88190c469be217ca48cb158d411b262d"
-
-        response = requests.post(
-            CRM_URL,
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=20
-        )
+        response = requests.post(CRM_URL, data=payload)
 
         return jsonify({
             "success": True,
