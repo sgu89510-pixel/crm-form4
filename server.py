@@ -12,7 +12,7 @@ AFFC = "AFF-SCBWWGQO2I"
 BXC = "BX-P33D1QLLBBXXK"
 VTC = "VT-HP8XSRMKVS6E7"
 
-FUNNEL = "tbank"
+FUNNEL = "tkapital"
 GEO = "RU"
 LANG = "ru"
 
