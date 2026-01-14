@@ -3,79 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Заполнить форму</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-        }
-        .box {
-            width: 360px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 6px;
-        }
-        h2 {
-            text-align: center;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        button {
-            background: #0066ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        pre {
-            margin-top: 15px;
-            background: #eee;
-            padding: 10px;
-            font-size: 12px;
-            overflow-x: auto;
-        }
-    </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>Заполнить форму</h2>
+<h2>Заполнить форму</h2>
 
-    <form id="leadForm">
-        <input name="first_name" placeholder="Имя" required>
-        <input name="last_name" placeholder="Фамилия" required>
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="phone" placeholder="Телефон" required>
+<form method="POST" action="/submit">
+    <input name="first_name" placeholder="Имя" required><br><br>
+    <input name="last_name" placeholder="Фамилия" required><br><br>
+    <input name="email" type="email" placeholder="Email" required><br><br>
+    <input name="phone" placeholder="Телефон" required><br><br>
+    <input name="password" placeholder="Пароль" required><br><br>
 
-        <!-- OPTIONAL -->
-        <input name="utm_source" placeholder="utm_source">
-        <input name="utm_campaign" placeholder="utm_campaign">
-        <input name="subid" placeholder="subid">
-
-        <button type="submit">Отправить</button>
-    </form>
-
-    <pre id="result"></pre>
-</div>
-
-<script>
-document.getElementById("leadForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-
-    const res = await fetch("/submit", {
-        method: "POST",
-        body: formData
-    });
-
-    const json = await res.json();
-    document.getElementById("result").textContent =
-        JSON.stringify(json, null, 2);
-});
-</script>
+    <button type="submit">Отправить</button>
+</form>
 
 </body>
 </html>
