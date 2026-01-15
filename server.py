@@ -13,10 +13,10 @@ AFFC = "AFF-SCBWWGQO2I"
 BXC = "BX-P33D1QLLBBXXK"
 VTC = "VT-HP8XSRMKVS6E7"
 
-FUNNEL = "tbank"
+FUNNEL = "tkapital"
 LANDING_URL = "https://rgnarads.com"
 
-GEO = "RU"
+GEO = "KZ"
 LANG = "ru"
 
 # ================= ГЕНЕРАЦИЯ ПАРОЛЯ =================
