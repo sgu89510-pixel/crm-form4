@@ -2,6 +2,7 @@ from flask import Flask, request, send_file, jsonify
 import requests
 import random
 import string
+import re
 
 app = Flask(__name__)
 
@@ -16,10 +17,10 @@ VTC = "VT-HP8XSRMKVS6E7"
 FUNNEL = "tkapital"
 LANDING_URL = "https://rgnarads.com"
 
-GEO = "KZ"
+GEO = "KZ"          # 🔥 ВАЖНО: KZ
 LANG = "ru"
 
-# ================= ГЕНЕРАЦИЯ ПАРОЛЯ =================
+# ================= PASSWORD =================
 def generate_password():
     return (
         random.choice(string.ascii_uppercase) +
@@ -28,6 +29,20 @@ def generate_password():
         random.choice("!@#$%^&*") +
         ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     )
+
+# ================= IP HANDLER =================
+def get_client_ip(req):
+    forwarded = req.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        ip = forwarded.split(",")[0].strip()
+    else:
+        ip = req.remote_addr
+
+    # IPv4 or IPv6 validation
+    if ip and re.match(r"^(\d{1,3}\.){3}\d{1,3}$|^[0-9a-fA-F:]+$", ip):
+        return ip
+
+    return "8.8.8.8"  # fallback (валидный IP)
 
 # ================= ROUTES =================
 @app.route("/", methods=["GET"])
@@ -47,7 +62,7 @@ def submit():
             "password": generate_password(),
             "phone": request.form.get("phone").replace("+", "")
         },
-        "ip": request.headers.get("X-Forwarded-For", request.remote_addr),
+        "ip": get_client_ip(request),
         "funnel": FUNNEL,
         "landingURL": LANDING_URL,
         "geo": GEO,
