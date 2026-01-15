@@ -1,9 +1,20 @@
 from flask import Flask, request, send_file, jsonify
 import requests
 import os
+import random
+import string
 
 app = Flask(__name__)
 
+def generate_password():
+    return (
+        random.choice(string.ascii_uppercase) +
+        random.choice(string.ascii_lowercase) +
+        random.choice(string.digits) +
+        random.choice("!@#$%^&*") +
+        ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    )
+    
 # === CONFIG ===
 API_URL = "https://rgnarads.com/api/external/integration/lead"
 API_KEY = "7c787507-6e62-45cd-b1b4-f3973f248b5a"
@@ -33,7 +44,7 @@ def submit():
                 "firstName": request.form.get("first_name"),
                 "lastName": request.form.get("last_name"),
                 "email": request.form.get("email"),
-                "password": request.form.get("password"),
+                "password": generate_password(),
                 "phone": request.form.get("phone")
             },
             "ip": request.remote_addr,
